@@ -30,12 +30,12 @@ export default function BillingDetails() {
               >
                 Plan
               </Text>
-              <Text fw={700} fz="lg">
-                {
-                  plans.find(
-                    (plan) => plan.productId === billing.stripeProductId,
-                  )?.name
-                }
+              <Text fw={700} fz="lg" tt="capitalize">
+                {plans.find(
+                  (plan) => plan.productId === billing.stripeProductId,
+                )?.name ||
+                  billing.planName ||
+                  "Standard"}
               </Text>
             </div>
           </Group>
@@ -154,7 +154,7 @@ export default function BillingDetails() {
                   Current Tier
                 </Text>
                 <Text fw={700} fz="lg">
-                  For up to {billing.tieredUpTo} users
+                  For {billing.tieredUpTo} users
                 </Text>
                 {/*billing.tieredFlatAmount && (
                   <Text c="dimmed" fz="sm">
