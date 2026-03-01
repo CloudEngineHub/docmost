@@ -50,8 +50,6 @@ export const auditEventLabels: Record<string, string> = {
   "page.trashed": "Trashed page",
   "page.deleted": "Deleted page",
   "page.restored": "Restored page",
-  "page.moved_to_space": "Moved page to space",
-  "page.duplicated": "Duplicated page",
   "page.imported": "Imported page",
   "page.exported": "Exported page",
   "page.restricted": "Restricted page",
@@ -117,12 +115,17 @@ export const eventFilterOptions: EventGroup[] = [
     ],
   },
   {
+    group: "Comment",
+    items: [
+      { value: "comment.deleted", label: "Deleted comment" },
+    ],
+  },
+  {
     group: "Page",
     items: [
       { value: "page.trashed", label: "Trashed page" },
       { value: "page.deleted", label: "Deleted page" },
       { value: "page.restored", label: "Restored page" },
-      { value: "page.moved_to_space", label: "Moved page" },
       { value: "page.imported", label: "Imported page" },
       { value: "page.exported", label: "Exported page" },
       { value: "page.restricted", label: "Restricted page" },
