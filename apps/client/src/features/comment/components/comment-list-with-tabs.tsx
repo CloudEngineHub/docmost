@@ -1,6 +1,17 @@
 import React, { useState, useRef, useCallback, memo, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { ActionIcon, Center, Divider, Group, Paper, Stack, Tabs, Badge, Text, ScrollArea } from "@mantine/core";
+import {
+  ActionIcon,
+  Center,
+  Divider,
+  Group,
+  Paper,
+  Stack,
+  Tabs,
+  Badge,
+  Text,
+  ScrollArea,
+} from "@mantine/core";
 import CommentListItem from "@/features/comment/components/comment-list-item";
 import {
   useCommentsQuery,
@@ -14,8 +25,6 @@ import { usePageQuery } from "@/features/page/queries/page-query.ts";
 import { IPagination } from "@/lib/types.ts";
 import { extractPageSlugId } from "@/lib";
 import { useTranslation } from "react-i18next";
-import { useQueryEmit } from "@/features/websocket/use-query-emit";
-import { useIsCloudEE } from "@/hooks/use-is-cloud-ee";
 import { useGetSpaceBySlugQuery } from "@/features/space/queries/space-query.ts";
 import { IconArrowUp, IconMessageOff } from "@tabler/icons-react";
 
@@ -27,11 +36,9 @@ function CommentListWithTabs() {
     data: comments,
     isLoading: isCommentsLoading,
     isError,
-  } = useCommentsQuery({ pageId: page?.id, limit: 100 });
+  } = useCommentsQuery({ pageId: page?.id });
   const createCommentMutation = useCreateCommentMutation();
   const [isLoading, setIsLoading] = useState(false);
-  const emit = useQueryEmit();
-  const isCloudEE = useIsCloudEE();
   const { data: space } = useGetSpaceBySlugQuery(page?.space?.slug);
 
   const canComment = page?.permissions?.canEdit ?? false;
@@ -67,15 +74,13 @@ function CommentListWithTabs() {
           content: JSON.stringify(content),
         });
 
-        emit({
-          operation: "invalidateComment",
-          pageId: page?.id,
-        });
-
         setTimeout(() => {
           const selector = `div[data-comment-id="${createdComment.id}"]`;
           const commentElement = document.querySelector(selector);
-          commentElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+          commentElement?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
         }, 400);
       } catch (error) {
         console.error("Failed to post comment:", error);
@@ -97,11 +102,6 @@ function CommentListWithTabs() {
         };
 
         await createCommentMutation.mutateAsync(commentData);
-
-        emit({
-          operation: "invalidateComment",
-          pageId: page?.id,
-        });
       } catch (error) {
         console.error("Failed to post comment:", error);
       } finally {
@@ -170,59 +170,6 @@ function CommentListWithTabs() {
     />
   ) : null;
 
-  // If not cloud/enterprise, show simple list without tabs
-  if (!isCloudEE) {
-    return (
-      <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-        <ScrollArea style={{ flex: "1 1 auto" }} scrollbarSize={5} type="scroll">
-          <div style={{ paddingBottom: "8px" }}>
-            {comments?.items
-              .filter((comment: IComment) => comment.parentCommentId === null)
-              .map((comment) => (
-                <Paper
-                  shadow="sm"
-                  radius="md"
-                  p="sm"
-                  mb="sm"
-                  withBorder
-                  key={comment.id}
-                  data-comment-id={comment.id}
-                >
-                  <div>
-                    <CommentListItem
-                      comment={comment}
-                      pageId={page?.id}
-                      canComment={canComment}
-                      userSpaceRole={space?.membership?.role}
-                    />
-                    <MemoizedChildComments
-                      comments={comments}
-                      parentId={comment.id}
-                      pageId={page?.id}
-                      canComment={canComment}
-                      userSpaceRole={space?.membership?.role}
-                    />
-                  </div>
-
-                  {canComment && (
-                    <>
-                      <Divider my={4} />
-                      <CommentEditorWithActions
-                        commentId={comment.id}
-                        onSave={handleAddReply}
-                        isLoading={isLoading}
-                      />
-                    </>
-                  )}
-                </Paper>
-              ))}
-          </div>
-        </ScrollArea>
-        {pageCommentInput}
-      </div>
-    );
-  }
-
   return (
     <div
       style={{
@@ -232,7 +179,16 @@ function CommentListWithTabs() {
         flexDirection: "column",
       }}
     >
-      <Tabs defaultValue="open" variant="default" style={{ flex: "1 1 auto", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <Tabs
+        defaultValue="open"
+        variant="default"
+        style={{
+          flex: "1 1 auto",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
         <Tabs.List justify="center">
           <Tabs.Tab
             value="open"
@@ -266,7 +222,11 @@ function CommentListWithTabs() {
               {activeComments.length === 0 ? (
                 <Center py="xl">
                   <Stack align="center" gap="xs">
-                    <IconMessageOff size={32} stroke={1.5} color="var(--mantine-color-dimmed)" />
+                    <IconMessageOff
+                      size={32}
+                      stroke={1.5}
+                      color="var(--mantine-color-dimmed)"
+                    />
                     <Text size="sm" c="dimmed">
                       {t("No open comments.")}
                     </Text>
@@ -281,7 +241,11 @@ function CommentListWithTabs() {
               {resolvedComments.length === 0 ? (
                 <Center py="xl">
                   <Stack align="center" gap="xs">
-                    <IconMessageOff size={32} stroke={1.5} color="var(--mantine-color-dimmed)" />
+                    <IconMessageOff
+                      size={32}
+                      stroke={1.5}
+                      color="var(--mantine-color-dimmed)"
+                    />
                     <Text size="sm" c="dimmed">
                       {t("No resolved comments.")}
                     </Text>
@@ -291,7 +255,6 @@ function CommentListWithTabs() {
                 resolvedComments.map(renderComments)
               )}
             </Tabs.Panel>
-
           </div>
         </ScrollArea>
       </Tabs>
@@ -347,7 +310,12 @@ const ChildComments = ({
 
 const MemoizedChildComments = memo(ChildComments);
 
-const CommentEditorWithActions = ({ commentId, onSave, isLoading, placeholder = undefined }) => {
+const CommentEditorWithActions = ({
+  commentId,
+  onSave,
+  isLoading,
+  placeholder = undefined,
+}) => {
   const [content, setContent] = useState("");
   const { ref, focused } = useFocusWithin();
   const commentEditorRef = useRef(null);
@@ -385,7 +353,16 @@ const PageCommentInput = ({ onSave, isLoading }) => {
   }, [content, onSave]);
 
   return (
-    <div ref={ref} style={{ flex: "0 0 auto", borderTop: "1px solid var(--mantine-color-default-border)", paddingTop: "var(--mantine-spacing-sm)", paddingBottom: 25, position: "relative" }}>
+    <div
+      ref={ref}
+      style={{
+        flex: "0 0 auto",
+        borderTop: "1px solid var(--mantine-color-default-border)",
+        paddingTop: "var(--mantine-spacing-sm)",
+        paddingBottom: 25,
+        position: "relative",
+      }}
+    >
       <CommentEditor
         ref={commentEditorRef}
         onUpdate={setContent}
