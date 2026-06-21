@@ -7,6 +7,7 @@ import {
   IconH2,
   IconH3,
   IconInfoCircle,
+  IconLayoutKanban,
   IconList,
   IconListNumbers,
   IconMath,
@@ -21,6 +22,7 @@ import {
   IconMenu4,
   IconPageBreak,
   IconCalendar,
+  IconClock,
   IconAppWindow,
   IconSitemap,
   IconColumns3,
@@ -56,6 +58,7 @@ import {
   VimeoIcon,
   YoutubeIcon,
 } from "@/components/icons";
+import { insertBaseEmbedBlock } from "@/features/editor/components/base-embed/insert-base-embed";
 
 const CommandGroups: SlashMenuGroupedItemsType = {
   basic: [
@@ -359,6 +362,24 @@ const CommandGroups: SlashMenuGroupedItemsType = {
           .run(),
     },
     {
+      title: "Base (Inline)",
+      description: "Insert an inline base on this page",
+      searchTerms: ["base", "database", "table", "grid", "spreadsheet"],
+      icon: IconTable,
+      command: ({ editor, range }: CommandProps) => {
+        insertBaseEmbedBlock(editor, { range });
+      },
+    },
+    {
+      title: "Kanban",
+      description: "Insert a kanban board on this page",
+      searchTerms: ["kanban", "board", "cards", "status", "task", "database"],
+      icon: IconLayoutKanban,
+      command: ({ editor, range }: CommandProps) => {
+        insertBaseEmbedBlock(editor, { range, template: "kanban" });
+      },
+    },
+    {
       title: "Toggle block",
       description: "Insert collapsible block.",
       searchTerms: ["collapsible", "block", "toggle", "details", "expand"],
@@ -471,6 +492,25 @@ const CommandGroups: SlashMenuGroupedItemsType = {
           .focus()
           .deleteRange(range)
           .insertContent(currentDate)
+          .run();
+      },
+    },
+    {
+      title: "Time",
+      description: "Insert current time",
+      searchTerms: ["time", "now", "clock"],
+      icon: IconClock,
+      command: ({ editor, range }: CommandProps) => {
+        const currentTime = new Date().toLocaleTimeString(i18n.language, {
+          hour: "numeric",
+          minute: "numeric",
+        });
+
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertContent(currentTime)
           .run();
       },
     },

@@ -7,10 +7,12 @@ import {
   IconCaretRightFilled,
   IconChevronDown,
   IconInfoCircle,
+  IconLayoutKanban,
   IconMath,
   IconMathFunction,
   IconRotate2,
   IconSitemap,
+  IconTable,
   IconTag,
 } from "@tabler/icons-react";
 import IconExcalidraw from "@/components/icons/icon-excalidraw";
@@ -29,6 +31,7 @@ import {
   YoutubeIcon,
 } from "@/components/icons";
 import { useTranslation } from "react-i18next";
+import { insertBaseEmbedBlock } from "@/features/editor/components/base-embed/insert-base-embed";
 
 interface Props {
   editor: Editor;
@@ -96,10 +99,26 @@ export const MoreInsertsGroup: FC<Props> = ({ editor, templateMode }) => {
           <Menu.Item
             leftSection={<IconRotate2 size={16} />}
             onClick={() =>
-              editor.chain().focus().insertTransclusionSource().run()
+              editor.chain().focus().toggleTransclusionSource().run()
             }
           >
             {t("Synced block")}
+          </Menu.Item>
+        )}
+        {!templateMode && (
+          <Menu.Item
+            leftSection={<IconTable size={16} />}
+            onClick={() => insertBaseEmbedBlock(editor)}
+          >
+            {t("Base (Inline)")}
+          </Menu.Item>
+        )}
+        {!templateMode && (
+          <Menu.Item
+            leftSection={<IconLayoutKanban size={16} />}
+            onClick={() => insertBaseEmbedBlock(editor, { template: "kanban" })}
+          >
+            {t("Kanban")}
           </Menu.Item>
         )}
 
