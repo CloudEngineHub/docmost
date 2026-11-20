@@ -4,8 +4,11 @@ import { ActionIcon, Menu, Tooltip } from "@mantine/core";
 import {
   IconAppWindow,
   IconCalendar,
+  IconCalendarMonth,
   IconCaretRightFilled,
   IconChevronDown,
+  IconCursorText,
+  IconForms,
   IconInfoCircle,
   IconLayoutKanban,
   IconLayoutNavbar,
@@ -16,6 +19,7 @@ import {
   IconSuperscript,
   IconTable,
   IconTag,
+  IconVariable,
 } from "@tabler/icons-react";
 import IconExcalidraw from "@/components/icons/icon-excalidraw";
 import IconMermaid from "@/components/icons/icon-mermaid";
@@ -37,6 +41,7 @@ import { useHasFeature } from "@/ee/hooks/use-feature";
 import { Feature } from "@/ee/features";
 import { useUpgradeLabel } from "@/ee/hooks/use-upgrade-label";
 import { UpgradeBadge } from "@/ee/components/upgrade-badge";
+import { isBetaBaseForms } from "@/lib/config.ts";
 
 interface Props {
   editor: Editor;
@@ -67,6 +72,15 @@ export const MoreInsertsGroup: FC<Props> = ({ editor, templateMode }) => {
       </Menu.Target>
       <Menu.Dropdown mah={400} style={{ overflowY: "auto" }}>
         <Menu.Label>{t("Advanced")}</Menu.Label>
+        {templateMode && (
+          <Menu.Item
+            leftSection={<IconCursorText size={16} />}
+            disabled={!editor.can().editTemplatePlaceholder()}
+            onClick={() => editor.commands.editTemplatePlaceholder()}
+          >
+            {t("Placeholder text")}
+          </Menu.Item>
+        )}
         <Menu.Item
           leftSection={<IconInfoCircle size={16} />}
           onClick={() => editor.chain().focus().toggleCallout().run()}
@@ -139,6 +153,38 @@ export const MoreInsertsGroup: FC<Props> = ({ editor, templateMode }) => {
               }}
             >
               {t("Kanban")}
+            </Menu.Item>
+          </Tooltip>
+        )}
+        {!templateMode && (
+          <Tooltip label={upgradeLabel} disabled={hasBases} position="right">
+            <Menu.Item
+              leftSection={<IconCalendarMonth size={16} />}
+              aria-disabled={!hasBases}
+              closeMenuOnClick={hasBases}
+              style={{ opacity: hasBases ? undefined : 0.7 }}
+              rightSection={!hasBases && <UpgradeBadge />}
+              onClick={() => {
+                if (hasBases) insertBaseEmbedBlock(editor, { template: "calendar" });
+              }}
+            >
+              {t("Calendar")}
+            </Menu.Item>
+          </Tooltip>
+        )}
+        {!templateMode && isBetaBaseForms() && (
+          <Tooltip label={upgradeLabel} disabled={hasBases} position="right">
+            <Menu.Item
+              leftSection={<IconForms size={16} />}
+              aria-disabled={!hasBases}
+              closeMenuOnClick={hasBases}
+              style={{ opacity: hasBases ? undefined : 0.7 }}
+              rightSection={!hasBases && <UpgradeBadge />}
+              onClick={() => {
+                if (hasBases) insertBaseEmbedBlock(editor, { template: "form" });
+              }}
+            >
+              {t("Form")}
             </Menu.Item>
           </Tooltip>
         )}
@@ -230,6 +276,15 @@ export const MoreInsertsGroup: FC<Props> = ({ editor, templateMode }) => {
 
         <Menu.Divider />
         <Menu.Label>{t("Utility")}</Menu.Label>
+        {templateMode && (
+          <Menu.Item
+            leftSection={<IconVariable size={16} />}
+            disabled={!editor.can().insertTemplateVariable?.()}
+            onClick={() => editor.commands.insertTemplateVariable()}
+          >
+            {t("Variable")}
+          </Menu.Item>
+        )}
         <Menu.Item
           leftSection={<IconCalendar size={16} />}
           onClick={() => editor.chain().focus().insertDate().run()}

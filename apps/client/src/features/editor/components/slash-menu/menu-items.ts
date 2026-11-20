@@ -8,6 +8,7 @@ import {
   IconH2,
   IconH3,
   IconInfoCircle,
+  IconForms,
   IconLayoutKanban,
   IconLayoutNavbar,
   IconList,
@@ -21,15 +22,18 @@ import {
   IconPhoto,
   IconTable,
   IconTypography,
+  IconCursorText,
   IconMenu4,
   IconPageBreak,
   IconCalendar,
+  IconCalendarMonth,
   IconClock,
   IconAppWindow,
   IconSitemap,
   IconColumns3,
   IconColumns2,
   IconTag,
+  IconVariable,
   IconMoodSmile,
   IconRotate2,
   IconSuperscript,
@@ -50,6 +54,7 @@ import IconDrawio from "@/components/icons/icon-drawio";
 import { IconColumns4 } from "@/components/icons/icon-columns-4";
 import { IconColumns5 } from "@/components/icons/icon-columns-5";
 import i18n from "@/i18n.ts";
+import { isBetaBaseForms } from "@/lib/config.ts";
 import {
   AirtableIcon,
   FigmaIcon,
@@ -82,6 +87,26 @@ const CommandGroups: SlashMenuGroupedItemsType = {
           .deleteRange(range)
           .toggleNode("paragraph", "paragraph")
           .run();
+      },
+    },
+    {
+      title: "Placeholder text",
+      description: "Show an instruction until someone types here.",
+      searchTerms: ["placeholder", "instruction", "hint"],
+      icon: IconCursorText,
+      disable: (editor) => !editor.can().editTemplatePlaceholder?.(),
+      command: ({ editor, range }) => {
+        editor.chain().deleteRange(range).editTemplatePlaceholder().run();
+      },
+    },
+    {
+      title: "Variable",
+      description: "Fill in a named field when using this template.",
+      searchTerms: ["variable", "field", "prefill"],
+      icon: IconVariable,
+      disable: (editor) => !editor.can().insertTemplateVariable?.(),
+      command: ({ editor, range }) => {
+        editor.chain().deleteRange(range).insertTemplateVariable().run();
       },
     },
     {
@@ -392,6 +417,27 @@ const CommandGroups: SlashMenuGroupedItemsType = {
       requiresBases: true,
       command: ({ editor, range }: CommandProps) => {
         insertBaseEmbedBlock(editor, { range, template: "kanban" });
+      },
+    },
+    {
+      title: "Calendar",
+      description: "Insert a calendar on this page",
+      searchTerms: ["calendar", "schedule", "events", "planner", "database"],
+      icon: IconCalendarMonth,
+      requiresBases: true,
+      command: ({ editor, range }: CommandProps) => {
+        insertBaseEmbedBlock(editor, { range, template: "calendar" });
+      },
+    },
+    {
+      title: "Form",
+      description: "Insert a form that collects responses into a base",
+      searchTerms: ["form", "survey", "questionnaire", "responses", "database"],
+      icon: IconForms,
+      requiresBases: true,
+      disable: () => !isBetaBaseForms(),
+      command: ({ editor, range }: CommandProps) => {
+        insertBaseEmbedBlock(editor, { range, template: "form" });
       },
     },
     {
