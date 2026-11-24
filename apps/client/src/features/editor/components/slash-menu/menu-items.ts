@@ -28,6 +28,7 @@ import {
   IconCalendar,
   IconCalendarMonth,
   IconClock,
+  IconClockHour3,
   IconAppWindow,
   IconSitemap,
   IconColumns3,
@@ -613,12 +614,21 @@ const CommandGroups: SlashMenuGroupedItemsType = {
       },
     },
     {
+      title: "Recently updated",
+      description: "List recently updated pages",
+      searchTerms: ["recent pages", "updates", "activity", "recently-updated"],
+      icon: IconClockHour3,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).insertRecentlyUpdated().run();
+      },
+    },
+    {
       title: "Pages by label",
       description: "List pages that match selected labels.",
       searchTerms: ["tags", "labels", "pages", "content by label"],
       icon: IconTags,
       command: ({ editor, range }) => {
-        editor.chain().focus().deleteRange(range).insertPagesByLabel().run();
+        editor.chain().focus().deleteRange(range).insertItemsByLabel().run();
       },
     },
     {

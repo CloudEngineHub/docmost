@@ -5,11 +5,11 @@ import { Superscript } from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import { Typography } from '@tiptap/extension-typography';
 import { TextStyle } from '@tiptap/extension-text-style';
-import { Color } from '@tiptap/extension-color';
 import { Youtube } from '@tiptap/extension-youtube';
 import { TaskList, TaskItem } from '@tiptap/extension-list';
 import {
   Heading,
+  SectionAnchor,
   Callout,
   Comment,
   CustomCodeBlock,
@@ -35,8 +35,10 @@ import {
   Embed,
   Mention,
   Subpages,
-  PagesByLabel,
+  RecentlyUpdated,
+  ItemsByLabel,
   Highlight,
+  Color,
   Indent,
   UniqueID,
   Columns,
@@ -92,8 +94,9 @@ export const tiptapExtensions = [
     content: 'block+ footnotes?',
   }),
   Heading,
+  SectionAnchor,
   UniqueID.configure({
-    types: ['heading', 'paragraph', 'transclusionSource'],
+    types: ['heading', 'paragraph', 'transclusionSource', 'sectionAnchor'],
   }),
   Comment,
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
@@ -137,7 +140,8 @@ export const tiptapExtensions = [
   Embed,
   Mention,
   Subpages,
-  PagesByLabel,
+  RecentlyUpdated,
+  ItemsByLabel,
   Columns,
   Column,
   Status,
@@ -183,7 +187,7 @@ export function jsonToText(tiptapJson: JSONContent) {
   // Public search snippets use this stored text before the page is rendered.
   return collapseBlankLines(
     generateText(tiptapJson, templateExtensions, {
-      textSerializers: { pagesByLabel: () => '' },
+      textSerializers: { itemsByLabel: () => '' },
     }),
   );
 }

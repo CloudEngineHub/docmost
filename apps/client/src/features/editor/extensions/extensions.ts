@@ -12,7 +12,6 @@ import { Superscript } from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { Typography } from "@tiptap/extension-typography";
 import { TextStyle } from "@tiptap/extension-text-style";
-import { Color } from "@tiptap/extension-color";
 import { Youtube } from "@tiptap/extension-youtube";
 import SlashCommand, {
   SlashCommandExtension as Command,
@@ -54,9 +53,12 @@ import {
   TableHeaderPin,
   TableReadonlySort,
   Subpages,
-  PagesByLabel,
+  RecentlyUpdated,
+  ItemsByLabel,
   Heading,
+  SectionAnchor,
   Highlight,
+  Color,
   Indent,
   ListItem,
   TaskItem,
@@ -110,6 +112,7 @@ import ExcalidrawView from "@/features/editor/components/excalidraw/excalidraw-v
 import EmbedView from "@/features/editor/components/embed/embed-view.tsx";
 import PdfView from "@/features/editor/components/pdf/pdf-view.tsx";
 import SubpagesView from "@/features/editor/components/subpages/subpages-view.tsx";
+import RecentlyUpdatedView from "@/features/editor/components/recently-updated/recently-updated-view.tsx";
 import { PagesByLabelView } from "@/features/editor/components/pages-by-label/pages-by-label-view";
 import IntegrationCardView from "@/features/editor/components/integration-link/integration-card-view.tsx";
 import IntegrationMentionView from "@/features/editor/components/integration-link/integration-mention-view.tsx";
@@ -213,8 +216,9 @@ export const mainExtensions = [
   }),
   SharedStorage,
   Heading.configure({ translate: (label) => i18n.t(label) }),
+  SectionAnchor,
   UniqueID.configure({
-    types: ["heading", "paragraph", "transclusionSource"],
+    types: ["heading", "paragraph", "transclusionSource", "sectionAnchor"],
     filterTransaction: (transaction) => !isChangeOrigin(transaction),
   }),
   Placeholder.configure({
@@ -417,7 +421,10 @@ export const mainExtensions = [
   Subpages.configure({
     view: SubpagesView,
   }),
-  PagesByLabel.configure({
+  RecentlyUpdated.configure({
+    view: RecentlyUpdatedView,
+  }),
+  ItemsByLabel.configure({
     defaultHeading: () => i18n.t("Pages by label"),
     view: PagesByLabelView,
   }),

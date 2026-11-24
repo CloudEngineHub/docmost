@@ -1,7 +1,9 @@
+import { EditorSpaceContext } from "@/features/editor/components/recently-updated/editor-space-context";
 import classes from "@/features/editor/styles/editor.module.css";
 import React, { useEffect } from "react";
 import { TitleEditor } from "@/features/editor/title-editor";
 import PageEditor from "@/features/editor/page-editor";
+import { useImageLinkNavigation } from "./components/image/use-image-link-navigation";
 import {
   ActionIcon,
   Alert,
@@ -81,6 +83,7 @@ export function FullEditor({
   showToolbar,
 }: FullEditorProps) {
   const { t } = useTranslation();
+  const handleImageLink = useImageLinkNavigation();
   const [user] = useAtom(userAtom);
   const { data: space } = useGetSpaceBySlugQuery(spaceSlug);
   const fullPageWidth = user?.settings?.preferences?.fullPageWidth;
@@ -156,13 +159,18 @@ export function FullEditor({
         contributors={contributors}
         readOnly={!editable}
       />
-      <div className={clsx(classes.documentBody, classes.documentReveal)}>
-        <MemoizedPageEditor
-          pageId={pageId}
-          editable={editable}
-          content={content}
-          canComment={canComment}
-        />
+      <div
+        className={clsx(classes.documentBody, classes.documentReveal)}
+        onClick={handleImageLink}
+      >
+        <EditorSpaceContext.Provider value={spaceId}>
+          <MemoizedPageEditor
+            pageId={pageId}
+            editable={editable}
+            content={content}
+            canComment={canComment}
+          />
+        </EditorSpaceContext.Provider>
       </div>
       <EmptyPageGetStarted
         pageId={pageId}

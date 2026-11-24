@@ -269,7 +269,13 @@ export const defaultAsyncNodes: NodeSerializerAsync = {
   date(state, node) {
     state.text(node.textContent);
   },
-  pagesByLabel(state, node) {
+  recentlyUpdated(state, node) {
+    if (node.textContent) {
+      state.text(node.textContent);
+      state.closeBlock(node);
+    }
+  },
+  itemsByLabel(state, node) {
     state.text(node.attrs.heading || 'Pages by label');
     state.closeBlock(node);
   },
