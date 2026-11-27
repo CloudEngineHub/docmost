@@ -1934,6 +1934,7 @@
   "No active spaces. Archived spaces are under Archived.": "No active spaces. Archived spaces are under Archived.",
   "AI answers don't cover archived spaces.": "AI answers don't cover archived spaces.",
   "Include archived": "Include archived",
+  "Verified only": "Verified only",
   "Add cover": "Add cover",
   "Change cover": "Change cover",
   "Reposition": "Reposition",
@@ -2390,5 +2391,11 @@
   "Recently updated settings": "Recently updated settings",
   "Refresh recently updated pages": "Refresh recently updated pages",
   "Updated by {{name}}": "Updated by {{name}}",
-  "Use up to {{maxValues}} values per filter and {{maxLength}} characters per value.": "Use up to {{maxValues}} values per filter and {{maxLength}} characters per value."
+  "Use up to {{maxValues}} values per filter and {{maxLength}} characters per value.": "Use up to {{maxValues}} values per filter and {{maxLength}} characters per value.",
+  "Refresh preview": "Refresh preview",
+  "Couldn't refresh the preview": "Couldn't refresh the preview",
+  "Link actions": "Link actions",
+  "Remove from list": "Remove from list",
+  "Remove {{name}} from list": "Remove {{name}} from list",
+  "Failed to remove workspace from list": "Failed to remove workspace from list"
 }
